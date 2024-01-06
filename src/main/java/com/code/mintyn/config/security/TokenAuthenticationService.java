@@ -52,12 +52,9 @@ public class TokenAuthenticationService {
 
     public Optional<UserAuthentication> getAuthentication(HttpServletRequest request) {
         final String token = request.getHeader(AUTH_HEADER_NAME);
-        System.out.println(token);
         if (token != null && tokenStoreRepository.findByToken(token).isPresent()) {
             String username = jwtGenerator.getUsernameFromToken(token);
-            System.out.println(username);
             User user = userRepository.findFirstByUsername(username).orElse(null);
-            System.out.println(user);
             if (user != null) {
                 return Optional.of(new UserAuthentication(user));
             }

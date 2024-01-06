@@ -45,7 +45,6 @@ public class CardServiceImpl implements CardService {
     }
 
     private Mono<VerifySchemeModel> fetchCardDetails(VerifyCardDTO cardDTO) {
-        System.out.println("not in cache");
         return Mono.fromCallable(() -> cardRepository.findByBin(cardDTO.getBin()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(optionalCard -> processCard(optionalCard, cardDTO));
@@ -54,14 +53,28 @@ public class CardServiceImpl implements CardService {
 
     private Mono<VerifySchemeModel> processCard(Optional<Card> optionalCard, VerifyCardDTO cardDTO) {
         if (optionalCard.isPresent()) {
-            return Mono.just(convertToVerifySchemeModel(optionalCard.get()));
+            VerifySchemeModel model = convertToVerifySchemeModel(optionalCard.get());
+            cacheManager.put(cardDTO.getBin(), model);
+            return Mono.just(model);
         } else {
             return fetchFromProcessor(cardDTO);
         }
     }
 
+//    private Mono<VerifySchemeModel> fetchFromProcessor(VerifyCardDTO cardDTO) {
+//        if (Objects.isNull(cardDTO.getProvider())) {
+//            cardDTO.setProvider(appConfig.getDefaultCardProcessor());
+//        }
+//        AbstractCardProcessor cardProcessor = processorFactory.getProcessor(cardDTO.getProvider());
+//        return cardProcessor.verifyScheme(cardDTO.getBin())
+//                .flatMap(verifySchemeModel -> {
+//                    saveToDatabase(verifySchemeModel, cardDTO.getBin());
+//                    cacheManager.put(cardDTO.getBin(), verifySchemeModel);
+//                    return Mono.just(verifySchemeModel);
+//                });
+//    }
+
     private Mono<VerifySchemeModel> fetchFromProcessor(VerifyCardDTO cardDTO) {
-        System.out.println("from binlist");
         if (Objects.isNull(cardDTO.getProvider())) {
             cardDTO.setProvider(appConfig.getDefaultCardProcessor());
         }
@@ -69,10 +82,11 @@ public class CardServiceImpl implements CardService {
         return cardProcessor.verifyScheme(cardDTO.getBin())
                 .flatMap(verifySchemeModel -> {
                     saveToDatabase(verifySchemeModel, cardDTO.getBin());
-                    cacheManager.put(cardDTO.getBin(), verifySchemeModel);
-                    return Mono.just(verifySchemeModel);
+                    return Mono.fromRunnable(() -> cacheManager.put(cardDTO.getBin(), verifySchemeModel))
+                            .thenReturn(verifySchemeModel);
                 });
     }
+
 
     private void incrementCardCount(String bin) {
         cardRepository.findByBin(bin)

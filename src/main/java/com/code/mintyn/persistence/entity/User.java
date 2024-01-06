@@ -19,4 +19,8 @@ public class User extends BasePersistentEntity  {
     @Column(nullable = false)
     private String password;
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

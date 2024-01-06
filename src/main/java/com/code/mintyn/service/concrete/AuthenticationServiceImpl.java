@@ -36,8 +36,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LoginResponseModel login(LoginDTO loginForm) {
         User user = getUser(loginForm.getUserName());
-
-
         matchPassword(loginForm.getPassword(), user.getPassword(),user);
         userRepository.save(user);
 
@@ -59,8 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .password(passwordEncoder.encode(userCreate.getPassword()))
                     .build());
                 userRepository.save(savedCustomer);
-            log.info("Customer successfully created");
-        return ResponseMessage.builder().message("Customer Signed Up Successfully").build();
+        return ResponseMessage.builder().message("User Signed Up Successfully").build();
 
         }}
 
@@ -91,9 +88,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private void matchPassword(String plainPassword, String encryptedPassword,User user) {
         if (!passwordEncoder.matches(plainPassword, encryptedPassword)) {
             userRepository.save(user);
-            System.out.println(user);
             throw invalidCredentialException();
         }
     }
+
 
 }

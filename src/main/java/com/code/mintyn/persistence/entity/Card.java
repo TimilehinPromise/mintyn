@@ -1,9 +1,6 @@
 package com.code.mintyn.persistence.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -29,4 +26,11 @@ public class Card {
 
     private int count;
 
+    public Card(String bin, String scheme, String type, String bank, int count) {
+        this.bin = bin;
+        this.scheme = scheme;
+        this.type = type;
+        this.bank = bank;
+        this.count = count;
+    }
 }
