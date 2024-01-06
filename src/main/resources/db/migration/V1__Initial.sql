@@ -25,9 +25,7 @@ CREATE TABLE card (
                       bin VARCHAR(255) UNIQUE,
                       type VARCHAR(255),
                       bank VARCHAR(255),
-                      user_id BIGINT,
-                      count BIGINT NOT NULL DEFAULT 0,
-                      CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id)
+                      count BIGINT NOT NULL DEFAULT 0
 );
 
 

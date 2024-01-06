@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
+
 @Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
@@ -29,10 +32,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    public void doFilterInternal(HttpServletRequest httpServletRequest,
-                                 HttpServletResponse httpServletResponse,
-                                 FilterChain chain) throws IOException {
-
+    protected void doFilterInternal(HttpServletRequest httpServletRequest,
+                                    HttpServletResponse httpServletResponse,
+                                    FilterChain chain) throws IOException, ServletException {
 
         try {
             Optional<UserAuthentication> authentication = tokenAuthenticationService.getAuthentication(httpServletRequest);
@@ -47,10 +49,15 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             }
 
             chain.doFilter(httpServletRequest, httpServletResponse);
+        } catch (AuthenticationException e) {
+            logger.error("Authentication error: " + e.getMessage(), e);
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            httpServletResponse.getWriter().write("Authentication error: " + e.getMessage());
         } catch (Exception e) {
-            logger.info(e.getMessage());
-            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpServletResponse.getWriter().write("Invalid credentials");
+            logger.error("Internal server error: " + e.getMessage(), e);
+            httpServletResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            httpServletResponse.getWriter().write("Internal server error: " + e.getMessage());
         }
     }
 }
+

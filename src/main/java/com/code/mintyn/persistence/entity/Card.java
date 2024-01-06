@@ -27,10 +27,6 @@ public class Card {
 
     private String bank;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     private int count;
 
 }
