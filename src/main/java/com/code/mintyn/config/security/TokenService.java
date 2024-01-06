@@ -1,8 +1,8 @@
 package com.code.mintyn.config.security;
 
 
-import com.valuemart.shop.persistence.entity.TokenStore;
-import com.valuemart.shop.persistence.repository.TokenStoreRepository;
+import com.code.mintyn.persistence.entity.TokenStore;
+import com.code.mintyn.persistence.repository.TokenStoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

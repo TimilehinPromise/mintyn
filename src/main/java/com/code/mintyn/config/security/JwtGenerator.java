@@ -25,8 +25,7 @@ public class JwtGenerator {
     private String secret;
     @Value("${token.expiration}")
     private Long expiration;
-    @Autowired
-    private UserRepository userRepository;
+
 
     private Claims getClaimsFromToken(String token) {
         Claims claims;
