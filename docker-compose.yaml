@@ -1,0 +1,30 @@
+version: '3'
+services:
+  db:
+    image: postgres:13
+    restart: always
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: mintyn
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  value-mart-shop:
+    image: timmybot/mintyn:v1.1
+    container_name: mintyn_test
+    ports:
+      - "9060:9060"
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mintyn
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+volumes:
+  db-data:

@@ -64,19 +64,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/v1/auth/**",
-                        "/swagger**",
-                        "/swagger-resources/**",
-                        "/v2/api-docs**",
+                .antMatchers("/v1/api/auth/**",
                         "/csrf",
                         "/refresh",
-                        "/webjars/**",
-                        "/actuator/health",
-                        "/actuator/info",
-                        "/actuator/metrics",
-                        "/actuator/**",
-                        "/v1/register",
-                        "/v1/api/auth/**").permitAll()
+                        "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);

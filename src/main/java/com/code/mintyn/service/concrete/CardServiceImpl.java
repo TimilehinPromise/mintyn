@@ -61,18 +61,6 @@ public class CardServiceImpl implements CardService {
         }
     }
 
-//    private Mono<VerifySchemeModel> fetchFromProcessor(VerifyCardDTO cardDTO) {
-//        if (Objects.isNull(cardDTO.getProvider())) {
-//            cardDTO.setProvider(appConfig.getDefaultCardProcessor());
-//        }
-//        AbstractCardProcessor cardProcessor = processorFactory.getProcessor(cardDTO.getProvider());
-//        return cardProcessor.verifyScheme(cardDTO.getBin())
-//                .flatMap(verifySchemeModel -> {
-//                    saveToDatabase(verifySchemeModel, cardDTO.getBin());
-//                    cacheManager.put(cardDTO.getBin(), verifySchemeModel);
-//                    return Mono.just(verifySchemeModel);
-//                });
-//    }
 
     private Mono<VerifySchemeModel> fetchFromProcessor(VerifyCardDTO cardDTO) {
         if (Objects.isNull(cardDTO.getProvider())) {
